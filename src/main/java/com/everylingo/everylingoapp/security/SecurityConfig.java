@@ -26,9 +26,6 @@ public class SecurityConfig {
                         .antMatchers("/", "/error", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                )
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
@@ -37,6 +34,7 @@ public class SecurityConfig {
                         .addLogoutHandler(logoutHandler)
                 )
                 .oauth2Login();
+
         return http.build();
     }
 }
