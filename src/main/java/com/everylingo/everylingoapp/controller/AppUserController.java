@@ -15,9 +15,4 @@ public class AppUserController {
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
         return Collections.singletonMap("name", principal.getAttribute("name"));
     }
-
-    @GetMapping("/user_info")
-    public OAuth2User userInfo(@AuthenticationPrincipal OAuth2User principal) {
-        return principal;
-    }
 }
