@@ -1,11 +1,18 @@
 package com.everylingo.everylingoapp.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+
+//@Entity
+
+@Setter
+@Getter
 @Entity
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 public class Language {
     @Id
     @GeneratedValue(
@@ -18,6 +25,11 @@ public class Language {
             allocationSize = 1
     )
     private Long id;
+    private String language;
     private String name;
-    private String code;
+
+    public Language(String language, String name) {
+        this.language = language;
+        this.name = name;
+    }
 }
