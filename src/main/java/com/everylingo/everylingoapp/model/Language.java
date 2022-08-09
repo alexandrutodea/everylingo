@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 
 //@Entity
@@ -30,6 +31,8 @@ public class Language {
     private String code;
     @JsonProperty("name")
     private String name;
+    @ManyToMany(mappedBy = "preferredLanguages")
+    Set<AppUser> preferences;
 
     public Language(String name, String code) {
         this.name = name;
