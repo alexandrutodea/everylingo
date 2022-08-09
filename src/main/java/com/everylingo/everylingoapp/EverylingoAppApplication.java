@@ -1,6 +1,6 @@
 package com.everylingo.everylingoapp;
 
-import com.everylingo.everylingoapp.service.DeeplTranslator;
+import com.everylingo.everylingoapp.deepl.DeeplSupportedLanguageFetcher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,9 +14,9 @@ public class EverylingoAppApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(DeeplTranslator deepLTranslator) {
+    CommandLineRunner commandLineRunner(DeeplSupportedLanguageFetcher deepLSupportedLanguageFetcher) {
         return args -> {
-            deepLTranslator.fetchSupportedLanguages();
+            deepLSupportedLanguageFetcher.fetchSupportedLanguages();
         };
     }
 

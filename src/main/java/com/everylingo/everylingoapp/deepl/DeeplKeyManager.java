@@ -1,4 +1,4 @@
-package com.everylingo.everylingoapp.service;
+package com.everylingo.everylingoapp.deepl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

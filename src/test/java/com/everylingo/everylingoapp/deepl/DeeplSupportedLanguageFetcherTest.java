@@ -1,4 +1,4 @@
-package com.everylingo.everylingoapp.service;
+package com.everylingo.everylingoapp.deepl;
 
 import com.everylingo.everylingoapp.exception.DeeplApiException;
 import com.everylingo.everylingoapp.test.mothers.DataMother;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("DeepLTranslator Tests")
 @ExtendWith(MockitoExtension.class)
-class DeeplTranslatorTest {
+class DeeplSupportedLanguageFetcherTest {
     @Mock
     private DeeplKeyManager deepLKeyManager;
     @Mock
@@ -33,16 +33,16 @@ class DeeplTranslatorTest {
     @Mock
     private ObjectMapper objectMapper;
     @InjectMocks
-    private DeeplTranslator deepLTranslator;
+    private DeeplSupportedLanguageFetcher deepLSupportedLanguageFetcher = new DeeplSupportedLanguageFetcher();
 
     @Test
     @DisplayName("There should be no attempt to fetch supported languages if they have already been fetched")
     void thereShouldBeNoAttemptToFetchSupportedLanguagesIfTheyHaveAlreadyBeenFetched() throws IOException {
         //Arrange (list gets instantiated in object constructor)
         var language = DataMother.language();
-        this.deepLTranslator.addSupportedLanguage(language);
+        this.deepLSupportedLanguageFetcher.addSupportedLanguage(language);
         //Act
-        deepLTranslator.fetchSupportedLanguages();
+        deepLSupportedLanguageFetcher.fetchSupportedLanguages();
         //Assert
         verifyNoInteractions(deepLKeyManager);
         verifyNoInteractions(okHttpClient);
@@ -55,7 +55,7 @@ class DeeplTranslatorTest {
         var apiKey = DataMother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         //Act
-        var request = deepLTranslator.createSupportedLanguagesRequest();
+        var request = deepLSupportedLanguageFetcher.createSupportedLanguagesRequest();
         //Assert
         verify(deepLKeyManager).getDeepLAPIKey();
         verifyNoMoreInteractions(deepLKeyManager);
@@ -68,9 +68,9 @@ class DeeplTranslatorTest {
         //Arrange
         var apiKey = DataMother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
-        var expectedUrl = String.format("%s%s", DeeplTranslator.DEEPL_API_URL, "languages");
+        var expectedUrl = String.format("%s%s", DeeplSupportedLanguageFetcher.DEEPL_API_URL, "languages");
         //Act
-        var request = deepLTranslator.createSupportedLanguagesRequest();
+        var request = deepLSupportedLanguageFetcher.createSupportedLanguagesRequest();
         //Assert
         assertThat(request.url().toString()).isEqualTo(expectedUrl);
         verifyNoMoreInteractions(deepLKeyManager);
@@ -83,9 +83,9 @@ class DeeplTranslatorTest {
         //Arrange
         var language = DataMother.language();
         //Act + Assert
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(0);
-        deepLTranslator.addSupportedLanguage(language);
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(1);
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(0);
+        deepLSupportedLanguageFetcher.addSupportedLanguage(language);
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(1);
         verifyNoInteractions(deepLKeyManager);
         verifyNoInteractions(okHttpClient);
     }
@@ -95,11 +95,11 @@ class DeeplTranslatorTest {
     void removeSupportedLanguageMethodShouldRemoveASupportedLanguageFromThisListOfSupportedLanguages() {
         //Arrange
         var language = DataMother.language();
-        deepLTranslator.addSupportedLanguage(language);
+        deepLSupportedLanguageFetcher.addSupportedLanguage(language);
         //Act + Assert
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(1);
-        deepLTranslator.removeSupportedLanguage(language);
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(0);
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(1);
+        deepLSupportedLanguageFetcher.removeSupportedLanguage(language);
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(0);
         verifyNoInteractions(deepLKeyManager);
         verifyNoInteractions(okHttpClient);
     }
@@ -111,10 +111,10 @@ class DeeplTranslatorTest {
         var languages = DataMother.get3Languages();
         //Act + Assert
         languages
-                .forEach(language -> deepLTranslator.addSupportedLanguage(language));
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(3);
-        deepLTranslator.clearSupportedLanguagesList();
-        assertThat(deepLTranslator.getNumberOfSupportedLanguages()).isEqualTo(0);
+                .forEach(language -> deepLSupportedLanguageFetcher.addSupportedLanguage(language));
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(3);
+        deepLSupportedLanguageFetcher.clearSupportedLanguagesList();
+        assertThat(deepLSupportedLanguageFetcher.getNumberOfSupportedLanguages()).isEqualTo(0);
         verifyNoInteractions(okHttpClient);
         verifyNoInteractions(deepLKeyManager);
     }
@@ -132,7 +132,7 @@ class DeeplTranslatorTest {
         var apiKey = DataMother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         //Act + Assert
-        assertThatThrownBy(() -> deepLTranslator
+        assertThatThrownBy(() -> deepLSupportedLanguageFetcher
                 .fetchSupportedLanguages())
                 .isInstanceOf(DeeplApiException.class)
                 .hasMessageContaining("Failed to fetch supported languages");
@@ -152,7 +152,7 @@ class DeeplTranslatorTest {
         var apiKey = DataMother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         //Act + Assert
-        assertThatThrownBy(() -> deepLTranslator
+        assertThatThrownBy(() -> deepLSupportedLanguageFetcher
                 .fetchSupportedLanguages())
                 .isInstanceOf(DeeplApiException.class)
                 .hasMessageContaining("No response body returned by Deepl API");
@@ -180,10 +180,13 @@ class DeeplTranslatorTest {
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         when(objectMapper.readValue(any(String.class), any(TypeReference.class))).thenReturn(expectedLanguages);
         //Act
-        deepLTranslator.fetchSupportedLanguages();
+        deepLSupportedLanguageFetcher.fetchSupportedLanguages();
         //Assert
-        assertThat(deepLTranslator.getSupportedLanguages())
+        assertThat(deepLSupportedLanguageFetcher.getSupportedLanguages())
                 .containsExactlyInAnyOrderElementsOf(expectedLanguages);
+        verifyNoMoreInteractions(deepLKeyManager);
+        verifyNoMoreInteractions(objectMapper);
+        verifyNoMoreInteractions(okHttpClient);
     }
 
     @Test
@@ -192,15 +195,41 @@ class DeeplTranslatorTest {
         //Arrange
         var languages = DataMother.get3Languages();
         languages
-                .forEach(language -> deepLTranslator.addSupportedLanguage(language));
+                .forEach(language -> deepLSupportedLanguageFetcher.addSupportedLanguage(language));
         //Act
-        deepLTranslator.fetchSupportedLanguages();
+        deepLSupportedLanguageFetcher.fetchSupportedLanguages();
         //Assert
-        assertThat(deepLTranslator.getSupportedLanguages()).containsExactlyInAnyOrderElementsOf(languages);
+        assertThat(deepLSupportedLanguageFetcher
+                .getSupportedLanguages())
+                .containsExactlyInAnyOrderElementsOf(languages);
+        verifyNoInteractions(deepLKeyManager);
+        verifyNoInteractions(okHttpClient);
+        verifyNoInteractions(objectMapper);
+    }
+
+    @Test
+    @DisplayName("getLanguageIfSupported should return supported language if it exists")
+    void getLanguageIfSupportedMethodShouldAttemptToFetchLanguagesIfTheyHaveNotAlreadyBeenFetched() throws IOException {
+        //Arrange
+        var expectedLanguage = DataMother.language();
+        deepLSupportedLanguageFetcher.addSupportedLanguage(expectedLanguage);
+        //Act
+        var supportedLanguage = deepLSupportedLanguageFetcher.getLanguageIfSupported(expectedLanguage.getCode());
+        //Assert
+        assertThat(supportedLanguage).isNotEmpty();
+        assertThat(supportedLanguage.get()).isEqualTo(expectedLanguage);
+    }
+
+    @Test
+    @DisplayName("getLanguageIfSupported should fetch languages and return language if no languages have been added")
+    void getLanguageIfSupportedShouldFetchLanguagesAndReturnLanguageIfNoLanguagesHaveBeenAdded() throws IOException {
+        //Act + Assert
+        assertThatThrownBy(() -> deepLSupportedLanguageFetcher.getLanguageIfSupported("RO"))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @AfterEach
     void tearDown() {
-        deepLTranslator.clearSupportedLanguagesList();
+        deepLSupportedLanguageFetcher.clearSupportedLanguagesList();
     }
 }

@@ -1,5 +1,6 @@
 package com.everylingo.everylingoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,11 +26,13 @@ public class Language {
             allocationSize = 1
     )
     private Long id;
-    private String language;
+    @JsonProperty("language")
+    private String code;
+    @JsonProperty("name")
     private String name;
 
-    public Language(String language, String name) {
-        this.language = language;
+    public Language(String name, String code) {
         this.name = name;
+        this.code = code;
     }
 }

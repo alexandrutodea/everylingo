@@ -1,7 +1,8 @@
-package com.everylingo.everylingoapp.service;
+package com.everylingo.everylingoapp.deepl;
 
 import com.everylingo.everylingoapp.exception.DeeplApiException;
 import com.everylingo.everylingoapp.model.Language;
+import com.everylingo.everylingoapp.model.SupportedLanguageFetcher;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.FormBody;
@@ -16,33 +17,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DeeplTranslator implements AutomatedTranslator {
-
-
+public class DeeplSupportedLanguageFetcher implements SupportedLanguageFetcher {
     private List<Language> supportedLanguages;
+    @Autowired
     private DeeplKeyManager deepLKeyManager;
+    @Autowired
     private OkHttpClient okHttpClient;
+    @Autowired
     private ObjectMapper objectMapper;
     public static String DEEPL_API_URL = "https://api-free.deepl.com/v2/";
 
-    public DeeplTranslator(
-            @Autowired DeeplKeyManager deepLKeyManager,
-            @Autowired OkHttpClient okHttpClient,
-            @Autowired ObjectMapper objectMapper) {
-        this.deepLKeyManager = deepLKeyManager;
-        this.okHttpClient = okHttpClient;
-        this.objectMapper = objectMapper;
+    public DeeplSupportedLanguageFetcher() {
         this.supportedLanguages = new ArrayList<>();
     }
 
-    @Override
-    public String translate(String source, Language target) {
-        return null;
-    }
 
     @Override
-    public Optional<Language> getLanguageIfSupported(String languageName) {
-        return Optional.empty();
+    public Optional<Language> getLanguageIfSupported(String languageCode) throws IOException {
+
+        if (this.supportedLanguages.size() == 0) {
+            fetchSupportedLanguages();
+        }
+
+        return this.supportedLanguages
+                .stream()
+                .filter(language -> language.getCode().equals(languageCode))
+                .findFirst();
+
     }
 
     public void fetchSupportedLanguages() throws IOException {
@@ -66,10 +67,8 @@ public class DeeplTranslator implements AutomatedTranslator {
         }
 
         var responseBodyString = body.string();
-        System.out.println(responseBodyString);
         this.supportedLanguages = objectMapper.readValue(responseBodyString, new TypeReference<>() {
         });
-        System.out.println(this.supportedLanguages);
     }
 
     void addSupportedLanguage(Language language) {
