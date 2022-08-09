@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@DisplayName("DeepLTranslator Tests")
+@DisplayName("DeeplSupportedLanguageFetcher Tests")
 @ExtendWith(MockitoExtension.class)
 class DeeplSupportedLanguageFetcherTest {
     @Mock
@@ -218,14 +218,18 @@ class DeeplSupportedLanguageFetcherTest {
         //Assert
         assertThat(supportedLanguage).isNotEmpty();
         assertThat(supportedLanguage.get()).isEqualTo(expectedLanguage);
+        verifyNoInteractions(deepLKeyManager);
+        verifyNoInteractions(okHttpClient);
+        verifyNoInteractions(objectMapper);
     }
 
     @Test
-    @DisplayName("getLanguageIfSupported should fetch languages and return language if no languages have been added")
+    @DisplayName("getLanguageIfSupported should fetch languages if no languages have previously fetched")
     void getLanguageIfSupportedShouldFetchLanguagesAndReturnLanguageIfNoLanguagesHaveBeenAdded() throws IOException {
-        //Act + Assert
-        assertThatThrownBy(() -> deepLSupportedLanguageFetcher.getLanguageIfSupported("RO"))
-                .isInstanceOf(NullPointerException.class);
+        var spy = spy(deepLSupportedLanguageFetcher);
+        doNothing().when(spy).fetchSupportedLanguages();
+        spy.getLanguageIfSupported("DE");
+        verify(spy).fetchSupportedLanguages();
     }
 
     @AfterEach

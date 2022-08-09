@@ -36,7 +36,7 @@ public class DeeplSupportedLanguageFetcher implements SupportedLanguageFetcher {
     public Optional<Language> getLanguageIfSupported(String languageCode) throws IOException {
 
         if (this.supportedLanguages.size() == 0) {
-            fetchSupportedLanguages();
+            this.fetchSupportedLanguages();
         }
 
         return this.supportedLanguages
