@@ -1,11 +1,16 @@
 package com.everylingo.everylingoapp.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
+
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Application {
     @Id
     @SequenceGenerator(
@@ -23,4 +28,9 @@ public class Application {
     AppUser appUser;
     @Enumerated(EnumType.STRING)
     Status status;
+
+    public Application(AppUser appUser) {
+        this.appUser = appUser;
+        this.status = Status.PENDING;
+    }
 }

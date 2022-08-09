@@ -3,7 +3,7 @@ package com.everylingo.everylingoapp.service;
 import com.everylingo.everylingoapp.model.Language;
 import com.everylingo.everylingoapp.model.SupportedLanguageFetcher;
 import com.everylingo.everylingoapp.model.TranslationProvider;
-import com.everylingo.everylingoapp.test.mothers.DataMother;
+import com.everylingo.everylingoapp.test.mothers.Mother;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ class AutomatedTranslationServiceTest {
     @DisplayName("getLanguageIfSupported should call supported language fetcher")
     void getLanguageIfSupportedShouldCall() throws IOException {
         //Arrange
-        var language = DataMother.language();
+        var language = Mother.romanianLanguage();
         //Act
         automatedTranslationService.getLanguageIfSupported(language.getCode());
         //Assert
@@ -53,7 +53,7 @@ class AutomatedTranslationServiceTest {
     @DisplayName("translate method should call translation provider")
     void translateShouldCallTranslationProvider() throws IOException {
         //Arrange
-        var language = DataMother.language();
+        var language = Mother.romanianLanguage();
         var text = "Hello";
         //Act
         automatedTranslationService.translate(language, text);

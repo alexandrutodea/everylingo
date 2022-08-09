@@ -1,13 +1,17 @@
 package com.everylingo.everylingoapp.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "auth_provider_id_unique", columnNames = "auth_provider_id")
 })
@@ -28,13 +32,50 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private AppUserRole role = AppUserRole.USER;
     private boolean enabled;
-    @OneToMany(mappedBy = "requestedBy")
-    private List<Request> requests;
+    @OneToMany(mappedBy = "requestedBy", cascade = CascadeType.ALL)
+    private List<TranslationRequest> translationRequests;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "preferredLanguages",
-            joinColumns = @JoinColumn(name = "app_user_id",
-                    foreignKey = @ForeignKey(name = "app_user_id_fk")),
-            inverseJoinColumns = @JoinColumn(name = "language_id",
-                    foreignKey = @ForeignKey(name = "language_id_fk")))
-    Set<Language> preferredLanguages;
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id"))
+    List<Language> preferredLanguages;
+
+    public AppUser(Long id, String authProviderId, AppUserRole role) {
+        this.id = id;
+        this.authProviderId = authProviderId;
+        this.role = role;
+        this.translationRequests = new ArrayList<>();
+        this.preferredLanguages = new ArrayList<>();
+    }
+
+    public AppUser(String authProviderId, AppUserRole role) {
+        this.authProviderId = authProviderId;
+        this.role = role;
+        this.translationRequests = new ArrayList<>();
+        this.preferredLanguages = new ArrayList<>();
+    }
+
+    public void addTranslationRequest(TranslationRequest request) {
+        if (!this.translationRequests.contains(request)) {
+            this.translationRequests.add(request);
+            request.setRequestedBy(this);
+        }
+    }
+
+    public void removeTranslationRequest(TranslationRequest request) {
+        this.translationRequests.remove(request);
+        request.setRequestedBy(null);
+    }
+
+    public void addPreferredLanguage(Language language) {
+        if (!this.preferredLanguages.contains(language)) {
+            preferredLanguages.add(language);
+            language.getPreferredBy().add(this);
+        }
+    }
+
+    public void removePreferredLanguage(Language language) {
+        preferredLanguages.remove(language);
+        language.getPreferredBy().remove(this);
+    }
 }

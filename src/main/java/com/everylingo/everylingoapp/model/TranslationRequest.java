@@ -1,12 +1,16 @@
 package com.everylingo.everylingoapp.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
-public class Request {
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@EqualsAndHashCode
+public class TranslationRequest {
     @Id
     @SequenceGenerator(
             name = "request_gen",
@@ -24,10 +28,19 @@ public class Request {
     @Column(nullable = false)
     String sourceText;
     String translation;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(foreignKey = @ForeignKey(name = "source_language_id_fk"))
     Language sourceLanguage;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(foreignKey = @ForeignKey(name = "target_language_id_fk"))
     Language targetLanguage;
+
+    public TranslationRequest(Long id, AppUser requestedBy, String sourceText, String translation, Language sourceLanguage, Language targetLanguage) {
+        this.id = id;
+        this.requestedBy = requestedBy;
+        this.sourceText = sourceText;
+        this.translation = translation;
+        this.sourceLanguage = sourceLanguage;
+        this.targetLanguage = targetLanguage;
+    }
 }

@@ -1,7 +1,7 @@
 package com.everylingo.everylingoapp.deepl;
 
 import com.everylingo.everylingoapp.exception.DeeplApiException;
-import com.everylingo.everylingoapp.test.mothers.DataMother;
+import com.everylingo.everylingoapp.test.mothers.Mother;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import org.junit.jupiter.api.DisplayName;
@@ -38,9 +38,9 @@ class DeeplTranslationProviderTest {
     @DisplayName("DeepL Key Manager should be called when sending a request to the DeepL translation endpoint")
     void deepLKeyManagerShouldBeCalledWhenSendingARequestToTheDeepLTranslationEndpoints() throws IOException {
         //Arrange
-        var language = DataMother.language();
+        var language = Mother.romanianLanguage();
         var text = "Hello";
-        var apiKey = DataMother.apiKey();
+        var apiKey = Mother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         //Act
         deeplTranslationProvider.createTranslationRequest(text, language.getCode());
@@ -64,7 +64,7 @@ class DeeplTranslationProviderTest {
     @DisplayName("Exception should get thrown if provided source text is null")
     void exceptionShouldGetThrownIfProvidedSourceTextIsNull() {
         //Arrange
-        var language = DataMother.language();
+        var language = Mother.romanianLanguage();
         //Act + Assert
         assertThatThrownBy(() -> deeplTranslationProvider.translate(language, null))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -75,8 +75,8 @@ class DeeplTranslationProviderTest {
     @DisplayName("Exception should get thrown if DeepL API response is not 200")
     void exceptionShouldGetThrownIfDeepLApiResponseIsNot200() throws IOException {
         //Arrange
-        var language = DataMother.language();
-        var apiKey = DataMother.apiKey();
+        var language = Mother.romanianLanguage();
+        var apiKey = Mother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         var call = mock(Call.class);
         var response = mock(Response.class);
@@ -93,8 +93,8 @@ class DeeplTranslationProviderTest {
     @DisplayName("Exception should get thrown if DeepL API response body is null")
     void exceptionShouldGetThrownIfDeepLApiResponseBodyIsNull() throws IOException {
         //Arrange
-        var language = DataMother.language();
-        var apiKey = DataMother.apiKey();
+        var language = Mother.romanianLanguage();
+        var apiKey = Mother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
         var call = mock(Call.class);
         when(okHttpClient.newCall(any(Request.class))).thenReturn(call);
@@ -112,9 +112,9 @@ class DeeplTranslationProviderTest {
     @DisplayName("Should be capable of properly parsing valid DeepL API response")
     void shouldBeCapableOfProperlyParsingValidDeepLApiResponse() throws IOException {
         //Arrange
-        var apiKey = DataMother.apiKey();
+        var apiKey = Mother.apiKey();
         when(deepLKeyManager.getDeepLAPIKey()).thenReturn(apiKey);
-        var language = DataMother.language();
+        var language = Mother.romanianLanguage();
         var call = mock(Call.class);
         when(okHttpClient.newCall(any(Request.class))).thenReturn(call);
         var response = mock(Response.class);
