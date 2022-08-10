@@ -29,10 +29,10 @@ public class TranslationRequest {
     String sourceText;
     String translation;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "source_language_id_fk"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "source_language_id_fk"), nullable = false)
     Language sourceLanguage;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(foreignKey = @ForeignKey(name = "target_language_id_fk"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "target_language_id_fk"), nullable = false)
     Language targetLanguage;
 
     public TranslationRequest(AppUser requestedBy, String sourceText, String translation, Language sourceLanguage, Language targetLanguage) {
