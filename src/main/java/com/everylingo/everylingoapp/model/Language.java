@@ -16,6 +16,10 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "language_code_unique", columnNames = "code"),
+        @UniqueConstraint(name = "language_name_unique", columnNames = "name")
+})
 public class Language {
     @Id
     @GeneratedValue(
@@ -29,8 +33,10 @@ public class Language {
     )
     private Long id;
     @JsonProperty("language")
+    @Column(name = "code")
     private String code;
     @JsonProperty("name")
+    @Column(name = "name")
     private String name;
     @ManyToMany(mappedBy = "preferredLanguages")
     List<AppUser> preferredBy;
