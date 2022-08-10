@@ -12,6 +12,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +34,8 @@ class DeeplSupportedLanguageFetcherTest {
     private OkHttpClient okHttpClient;
     @Mock
     private ObjectMapper objectMapper;
+    @Captor
+    private ArgumentCaptor<String> rawBodyCaptor;
     @InjectMocks
     private DeeplSupportedLanguageFetcher deepLSupportedLanguageFetcher = new DeeplSupportedLanguageFetcher();
 
@@ -182,6 +186,8 @@ class DeeplSupportedLanguageFetcherTest {
         //Act
         deepLSupportedLanguageFetcher.fetchSupportedLanguages();
         //Assert
+        verify(objectMapper).readValue(rawBodyCaptor.capture(), any(TypeReference.class));
+        assertThat(rawBodyCaptor.getValue()).isEqualTo(responseBody.string());
         assertThat(deepLSupportedLanguageFetcher.getSupportedLanguages())
                 .containsExactlyInAnyOrderElementsOf(expectedLanguages);
         verifyNoMoreInteractions(deepLKeyManager);
