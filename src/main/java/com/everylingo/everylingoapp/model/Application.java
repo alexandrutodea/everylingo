@@ -24,7 +24,7 @@ public class Application {
     )
     private Long id;
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "app_user_id_fk"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "app_user_id_fk"), nullable = false)
     AppUser appUser;
     @Enumerated(EnumType.STRING)
     Status status;

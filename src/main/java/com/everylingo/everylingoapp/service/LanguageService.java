@@ -1,7 +1,7 @@
 package com.everylingo.everylingoapp.service;
 
 import com.everylingo.everylingoapp.model.Language;
-import com.everylingo.everylingoapp.repo.TranslationRequestRepository;
+import com.everylingo.everylingoapp.repository.TranslationRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

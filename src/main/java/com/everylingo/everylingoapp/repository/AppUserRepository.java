@@ -1,4 +1,4 @@
-package com.everylingo.everylingoapp.repo;
+package com.everylingo.everylingoapp.repository;
 
 import com.everylingo.everylingoapp.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
