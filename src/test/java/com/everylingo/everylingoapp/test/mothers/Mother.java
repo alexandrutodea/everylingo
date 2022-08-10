@@ -33,8 +33,7 @@ public class Mother {
     public static TranslationRequest translationRequest() {
         var german = Mother.germanLanguage();
         var romanian = Mother.romanianLanguage();
-        var appUser = Mother.appUser();
-        return new TranslationRequest(123L, null, "Hello", null, german, romanian);
+        return new TranslationRequest(null, "Hello", null, german, romanian);
     }
 
     public static List<Language> get3Languages() {

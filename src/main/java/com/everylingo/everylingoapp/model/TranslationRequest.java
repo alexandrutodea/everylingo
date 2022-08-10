@@ -35,8 +35,7 @@ public class TranslationRequest {
     @JoinColumn(foreignKey = @ForeignKey(name = "target_language_id_fk"))
     Language targetLanguage;
 
-    public TranslationRequest(Long id, AppUser requestedBy, String sourceText, String translation, Language sourceLanguage, Language targetLanguage) {
-        this.id = id;
+    public TranslationRequest(AppUser requestedBy, String sourceText, String translation, Language sourceLanguage, Language targetLanguage) {
         this.requestedBy = requestedBy;
         this.sourceText = sourceText;
         this.translation = translation;
