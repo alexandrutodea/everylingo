@@ -96,4 +96,24 @@ class TranslationRequestRepositoryTest {
                 .isEqualTo(sourceText);
     }
 
+    @Test
+    @DisplayName("findByRequestById method should return the linked appUser")
+    void findByRequestByIdMethodShouldReturnTheLinkedAppUser() {
+        //Arrange
+        var appUser = Mother.appUser();
+        var savedAppUser = appUserRepository.save(appUser);
+        var translationRequest = Mother.translationRequest();
+        translationRequest.setRequestedBy(appUser);
+        var id = savedAppUser.getId();
+        //Act
+        translationRequestRepository.save(translationRequest);
+        //Assert
+        var retrievedRequest = translationRequestRepository.findByRequestedById(id);
+        assertThat(retrievedRequest).isPresent();
+        assertThat(retrievedRequest.get().getRequestedBy())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(savedAppUser);
+    }
+
 }

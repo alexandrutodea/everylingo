@@ -28,9 +28,8 @@ class LanguageRepositoryTest {
         //Arrange
         var romanian = Mother.romanianLanguage();
         var duplicate = new Language("Romanian", "DE");
-        //Act
         testEntityManager.persist(romanian);
-        //Assert
+        //Act + Assert
         assertThatThrownBy(() -> testEntityManager
                 .persistAndFlush(duplicate))
                 .isInstanceOf(PersistenceException.class);
@@ -87,6 +86,22 @@ class LanguageRepositoryTest {
         assertThatThrownBy(() -> testEntityManager
                 .persistAndFlush(romanian))
                 .isInstanceOf(PersistenceException.class);
+    }
+
+    @Test
+    @DisplayName("findByCode method should return a list of the languages with the given code")
+    void findByCodeMethodShouldReturnAListOfTheLanguagesWithTheGivenCode() {
+        //Arrange
+        var language = Mother.romanianLanguage();
+        languageRepository.save(language);
+        //Act
+        var byCode = languageRepository.findByCode(language.getCode());
+        //Assert
+        assertThat(byCode.size()).isEqualTo(1);
+        assertThat(byCode.get(0))
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(language);
     }
 
 
