@@ -21,7 +21,7 @@ public class AppUser {
     @Column(name = "auth_provider_id", nullable = false)
     private String authProviderId;
     @Enumerated(EnumType.STRING)
-    private AppUserRole role = AppUserRole.USER;
+    private AppUserRole role;
     private boolean enabled;
     @OneToMany(mappedBy = "requestedBy", cascade = CascadeType.ALL)
     private List<TranslationRequest> translationRequests;
@@ -33,17 +33,17 @@ public class AppUser {
                     foreignKey = @ForeignKey(name = "preferred_languages_language_id_fk")))
     List<Language> preferredLanguages;
 
-    public AppUser(Long id, String authProviderId, AppUserRole role) {
+    public AppUser(Long id, String authProviderId) {
         this.id = id;
         this.authProviderId = authProviderId;
-        this.role = role;
+        this.role = AppUserRole.USER;
         this.translationRequests = new ArrayList<>();
         this.preferredLanguages = new ArrayList<>();
     }
 
-    public AppUser(String authProviderId, AppUserRole role) {
+    public AppUser(String authProviderId) {
         this.authProviderId = authProviderId;
-        this.role = role;
+        this.role = AppUserRole.USER;
         this.translationRequests = new ArrayList<>();
         this.preferredLanguages = new ArrayList<>();
     }

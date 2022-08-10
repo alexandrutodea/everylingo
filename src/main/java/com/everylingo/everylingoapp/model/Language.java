@@ -33,10 +33,10 @@ public class Language {
     )
     private Long id;
     @JsonProperty("language")
-    @Column(name = "code")
+    @Column(name = "code", nullable = false)
     private String code;
     @JsonProperty("name")
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(mappedBy = "preferredLanguages")
     List<AppUser> preferredBy;

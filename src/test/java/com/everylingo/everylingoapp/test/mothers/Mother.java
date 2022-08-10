@@ -1,7 +1,6 @@
 package com.everylingo.everylingoapp.test.mothers;
 
 import com.everylingo.everylingoapp.model.AppUser;
-import com.everylingo.everylingoapp.model.AppUserRole;
 import com.everylingo.everylingoapp.model.Language;
 import com.everylingo.everylingoapp.model.TranslationRequest;
 
@@ -28,7 +27,7 @@ public class Mother {
     }
 
     public static AppUser appUser() {
-        return new AppUser(123456789L, UUID.randomUUID().toString(), AppUserRole.USER);
+        return new AppUser(UUID.randomUUID().toString());
     }
 
     public static TranslationRequest translationRequest() {
