@@ -104,5 +104,30 @@ class LanguageRepositoryTest {
                 .isEqualTo(language);
     }
 
+    @Test
+    @DisplayName("getByCode returns language if language exists")
+    void getByCodeReturnsLanguageIfLanguageExists() {
+        //Arrange
+        var language = Mother.romanianLanguage();
+        languageRepository.save(language);
+        //Act
+        var byCode = languageRepository.getByCode(language.getCode());
+        //Assert
+        assertThat(byCode).isPresent();
+        assertThat(byCode.get())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(language);
+    }
+
+    @Test
+    @DisplayName("getByCode returns empty optional if language does not exist")
+    void getByCodeReturnsEmptyOptionalIfLanguageDoesNotExist() {
+        //Act
+        var byCode = languageRepository.getByCode("RO");
+        //Assert
+        assertThat(byCode).isEmpty();
+    }
+
 
 }
