@@ -42,36 +42,4 @@ public class TranslationRequest {
         this.sourceLanguage = sourceLanguage;
         this.targetLanguage = targetLanguage;
     }
-
-    public TranslationRequest(AppUser requestedBy, String sourceText, Language sourceLanguage, Language targetLanguage) {
-        this.requestedBy = requestedBy;
-        this.sourceText = sourceText;
-        this.sourceLanguage = sourceLanguage;
-        this.targetLanguage = targetLanguage;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public AppUser getRequestedBy() {
-        return requestedBy;
-    }
-
-    public String getSourceText() {
-        return sourceText;
-    }
-
-    public String getTranslation() {
-        return translation;
-    }
-
-    public Language getSourceLanguage() {
-        return sourceLanguage;
-    }
-
-    public Language getTargetLanguage() {
-        return targetLanguage;
-    }
-
 }
