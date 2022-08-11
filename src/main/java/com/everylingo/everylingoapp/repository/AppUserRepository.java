@@ -12,4 +12,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByAuthProviderId(String authProviderId);
 
     Optional<AppUser> findByAuthProviderIdAndRole(String authProviderId, AppUserRole role);
+
+    Optional<AppUser> findAppUserByAuthProviderIdAndEnabled(String authProviderId, Boolean enabled);
 }
