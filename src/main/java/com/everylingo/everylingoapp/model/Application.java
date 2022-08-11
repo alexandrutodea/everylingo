@@ -25,11 +25,13 @@ public class Application {
     private Long id;
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "app_user_id_fk"))
-    AppUser appUser;
+    private AppUser appUser;
     @Enumerated(EnumType.STRING)
-    Status status;
+    private Status status;
+    private String message;
 
-    public Application(AppUser appUser) {
+    public Application(AppUser appUser, String message) {
+        this.message = message;
         this.appUser = appUser;
         this.status = Status.PENDING;
     }

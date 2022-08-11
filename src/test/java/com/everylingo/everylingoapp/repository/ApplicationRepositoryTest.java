@@ -23,8 +23,9 @@ class ApplicationRepositoryTest {
     void shouldBeAbleToSaveApplication() {
         //Arrange
         var user = Mother.appUser();
+        var message = Mother.message();
         appUserRepository.save(user);
-        var application = new Application(user);
+        var application = new Application(user, message);
         //Act
         var savedApplication = applicationRepository.save(application);
         //Assert

@@ -25,5 +25,19 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, badRequest);
     }
 
+    @ExceptionHandler(value = {NotAnAdminException.class})
+    public ResponseEntity<Object> handleApiRequestException(NotAnAdminException e) {
+        HttpStatus unAuthorized = HttpStatus.UNAUTHORIZED;
+        ApiException apiException = new ApiException(e.getMessage(), unAuthorized, ZonedDateTime.now(ZoneId.of("Z")));
+        return new ResponseEntity<>(apiException, unAuthorized);
+    }
+
+    @ExceptionHandler(value = {ApplicationNotFoundException.class})
+    public ResponseEntity<Object> handleApiRequestException(ApplicationNotFoundException e) {
+        HttpStatus notFound = HttpStatus.NOT_FOUND;
+        ApiException apiException = new ApiException(e.getMessage(), notFound, ZonedDateTime.now(ZoneId.of("Z")));
+        return new ResponseEntity<>(apiException, notFound);
+    }
+
 
 }

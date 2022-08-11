@@ -1,16 +1,17 @@
 package com.everylingo.everylingoapp.controller;
 
+import com.everylingo.everylingoapp.model.Application;
+import com.everylingo.everylingoapp.model.Status;
 import com.everylingo.everylingoapp.request.SignupRequest;
 import com.everylingo.everylingoapp.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class ApplicationController {
@@ -22,4 +23,21 @@ public class ApplicationController {
     public void signup(@Valid @RequestBody SignupRequest signupRequest, @AuthenticationPrincipal OAuth2User principal) throws IOException {
         applicationService.signup(principal, signupRequest);
     }
+
+    @GetMapping(path = "/applications")
+    public List<Application> getApplications(@AuthenticationPrincipal OAuth2User oAuth2User) {
+        return applicationService.getAllApplications(oAuth2User);
+    }
+
+    @PutMapping(path = "/applications/{id}/approve")
+    public void approveApplication(@PathVariable Long id, @AuthenticationPrincipal OAuth2User oAuth2User) {
+        applicationService.updateApplicationStatus(id, true, Status.APPROVED, oAuth2User);
+    }
+
+    @PutMapping(path = "/applications/{id}/deny")
+    public void denyApplication(@PathVariable Long id, @AuthenticationPrincipal OAuth2User oAuth2User) {
+        applicationService.updateApplicationStatus(id, false, Status.DENIED, oAuth2User);
+    }
+
+
 }

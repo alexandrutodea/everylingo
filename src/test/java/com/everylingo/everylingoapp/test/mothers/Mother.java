@@ -67,5 +67,9 @@ public class Mother {
         };
     }
 
+    public static String message() {
+        return "Hello! My name is Alexandru and I would like to help with translations on your website. I am highly motivated person.";
+    }
+
 
 }
