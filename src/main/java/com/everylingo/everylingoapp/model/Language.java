@@ -1,5 +1,6 @@
 package com.everylingo.everylingoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -15,22 +16,12 @@ import java.util.List;
 @Entity
 @ToString
 @EqualsAndHashCode
+@Table(uniqueConstraints = {@UniqueConstraint(name = "language_code_unique", columnNames = "code"), @UniqueConstraint(name = "language_name_unique", columnNames = "name")})
 @NoArgsConstructor
-@Table(uniqueConstraints = {
-        @UniqueConstraint(name = "language_code_unique", columnNames = "code"),
-        @UniqueConstraint(name = "language_name_unique", columnNames = "name")
-})
 public class Language {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "language_gen"
-    )
-    @SequenceGenerator(
-            name = "language_gen",
-            sequenceName = "language_seq",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "language_gen")
+    @SequenceGenerator(name = "language_gen", sequenceName = "language_seq", allocationSize = 1)
     private Long id;
     @JsonProperty("language")
     @Column(name = "code", nullable = false)
@@ -39,6 +30,7 @@ public class Language {
     @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(mappedBy = "preferredLanguages")
+    @JsonIgnore
     List<AppUser> preferredBy;
 
     public Language(String name, String code) {

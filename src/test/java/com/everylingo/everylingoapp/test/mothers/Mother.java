@@ -3,10 +3,10 @@ package com.everylingo.everylingoapp.test.mothers;
 import com.everylingo.everylingoapp.model.AppUser;
 import com.everylingo.everylingoapp.model.Language;
 import com.everylingo.everylingoapp.model.TranslationRequest;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Mother {
 
@@ -42,6 +42,29 @@ public class Mother {
         languageList.add(new Language("German", "DE"));
         languageList.add(new Language("French", "FR"));
         return languageList;
+    }
+
+    public static String authProviderId() {
+        return "google-oauth2|111851965579678264193";
+    }
+
+    public static OAuth2User auth2User() {
+        return new OAuth2User() {
+            @Override
+            public Map<String, Object> getAttributes() {
+                return Map.of("sub", Mother.authProviderId());
+            }
+
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return new ArrayList<>();
+            }
+
+            @Override
+            public String getName() {
+                return "Jane Doe";
+            }
+        };
     }
 
 

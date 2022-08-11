@@ -13,9 +13,17 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {DeeplApiException.class})
     public ResponseEntity<Object> handleApiRequestException(DeeplApiException e) {
-        HttpStatus badRequest = HttpStatus.BAD_GATEWAY;
+        HttpStatus badGateway = HttpStatus.BAD_GATEWAY;
+        ApiException apiException = new ApiException(e.getMessage(), badGateway, ZonedDateTime.now(ZoneId.of("Z")));
+        return new ResponseEntity<>(apiException, badGateway);
+    }
+
+    @ExceptionHandler(value = {UserAlreadyExistsException.class})
+    public ResponseEntity<Object> handleApiRequestException(UserAlreadyExistsException e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ApiException apiException = new ApiException(e.getMessage(), badRequest, ZonedDateTime.now(ZoneId.of("Z")));
         return new ResponseEntity<>(apiException, badRequest);
     }
+
 
 }
