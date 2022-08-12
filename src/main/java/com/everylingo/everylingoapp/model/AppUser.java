@@ -1,5 +1,6 @@
 package com.everylingo.everylingoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +25,9 @@ public class AppUser {
     private AppUserRole role;
     private boolean enabled;
     @OneToMany(mappedBy = "requestedBy", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<TranslationRequest> translationRequests;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "preferred_languages",
             joinColumns = @JoinColumn(name = "app_user_id",

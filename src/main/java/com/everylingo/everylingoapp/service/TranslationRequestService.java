@@ -10,7 +10,9 @@ import com.everylingo.everylingoapp.repository.LanguageRepository;
 import com.everylingo.everylingoapp.repository.TranslationRequestRepository;
 import com.everylingo.everylingoapp.request.CreationRequest;
 import com.everylingo.everylingoapp.request.TranslationCompletionRequest;
+import com.everylingo.everylingoapp.response.AutomatedTranslationResponse;
 import com.everylingo.everylingoapp.utils.SubExtractor;
+import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -18,7 +20,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TranslationRequestService {
@@ -80,7 +85,8 @@ public class TranslationRequestService {
 
     public List<TranslationRequest> displayAllTranslationRequests(OAuth2User oAuth2User) {
         getUserIfEnabledAndActive(oAuth2User);
-        return translationRequestRepository.findAll();
+        var retrievedRequests = translationRequestRepository.findAll();
+        return new ArrayList<>(retrievedRequests);
     }
 
     public List<TranslationRequest> displayUserTranslationRequests(OAuth2User oAuth2User) {
@@ -105,6 +111,18 @@ public class TranslationRequestService {
         translationRequestRepository.save(translationRequest);
     }
 
+
+    public AutomatedTranslationResponse getAutomatedTranslationResponse(Long id, OAuth2User oAuth2User) throws IOException {
+        getUserIfEnabledAndActive(oAuth2User);
+        var retrievedTranslationRequest = translationRequestRepository.findById(id);
+        if (retrievedTranslationRequest.isEmpty()) {
+            throw new TranslationRequestNotFound();
+        }
+        var translationRequest = retrievedTranslationRequest.get();
+        var targetLanguage = translationRequest.getTargetLanguage();
+        return new AutomatedTranslationResponse(automatedTranslationService.translate(targetLanguage,
+                translationRequest.getSourceText()));
+    }
 
     public AppUser getUserIfEnabledAndActive(OAuth2User oAuth2User) {
         var authProviderId = subExtractor.extractSub(oAuth2User);

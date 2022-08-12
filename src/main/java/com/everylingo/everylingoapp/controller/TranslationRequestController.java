@@ -3,6 +3,7 @@ package com.everylingo.everylingoapp.controller;
 import com.everylingo.everylingoapp.model.TranslationRequest;
 import com.everylingo.everylingoapp.request.CreationRequest;
 import com.everylingo.everylingoapp.request.TranslationCompletionRequest;
+import com.everylingo.everylingoapp.response.AutomatedTranslationResponse;
 import com.everylingo.everylingoapp.service.TranslationRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +37,11 @@ public class TranslationRequestController {
     @PutMapping("/requests/{id}/complete")
     public void completeTranslationRequest(@PathVariable("id") Long id, @RequestBody @Valid TranslationCompletionRequest translationCompletionRequest, @AuthenticationPrincipal OAuth2User oAuth2User) {
         translationRequestService.completeTranslationRequest(id, translationCompletionRequest, oAuth2User);
+    }
+
+    @GetMapping("/requests/{id}/automated")
+    public AutomatedTranslationResponse getAutomatedTranslation(@PathVariable("id") Long id, @AuthenticationPrincipal OAuth2User oAuth2User) throws IOException {
+        return translationRequestService.getAutomatedTranslationResponse(id, oAuth2User);
     }
 
 }

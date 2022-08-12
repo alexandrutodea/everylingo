@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -92,6 +93,14 @@ public class ApplicationService {
         appUser.setEnabled(enableUser);
         appUserRepository.save(appUser);
         applicationRepository.save(application);
+    }
+
+    @Transactional
+    @Modifying
+    public void removeApplication(Long id, OAuth2User oAuth2User) {
+        checkAdmin(oAuth2User);
+        var byId = applicationRepository.findById(id);
+        byId.ifPresent(application -> applicationRepository.delete(application));
     }
 
     public void checkAdmin(OAuth2User oAuth2User) {

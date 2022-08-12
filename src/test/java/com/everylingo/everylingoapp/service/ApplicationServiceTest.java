@@ -10,6 +10,7 @@ import com.everylingo.everylingoapp.repository.LanguageRepository;
 import com.everylingo.everylingoapp.request.SignupRequest;
 import com.everylingo.everylingoapp.test.mothers.Mother;
 import com.everylingo.everylingoapp.utils.SubExtractor;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +38,9 @@ class ApplicationServiceTest {
 
     @Captor
     private ArgumentCaptor<String> languageCodeCaptor;
+
+    @Captor
+    private ArgumentCaptor<Long> idCaptor;
 
     @Mock
     private AutomatedTranslationService automatedTranslationService;
@@ -219,6 +223,34 @@ class ApplicationServiceTest {
         //Assert
         verify(appUserRepository).save(any());
         verify(applicationRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("Deleting an application should search the application by id")
+    void deletingAUserShouldSearchTheUserById() {
+        //Arrange
+        var user = mock(OAuth2User.class);
+        var id = 123L;
+        when(appUserRepository.findByAuthProviderIdAndRole(any(), any())).thenReturn(Optional.of(mock(AppUser.class)));
+        //Act
+        applicationService.removeApplication(id, user);
+        //Assert
+        verify(applicationRepository).findById(idCaptor.capture());
+        assertThat(idCaptor.getValue()).isEqualTo(id);
+    }
+
+    @Test
+    @DisplayName("Deleting an application should call the delete method on the application repository")
+    void deletingAnApplicationShouldCallTheDeleteMethodOnTheApplicationRepository() {
+        //Arrange
+        var user = mock(OAuth2User.class);
+        var id = 123L;
+        when(appUserRepository.findByAuthProviderIdAndRole(any(), any())).thenReturn(Optional.of(mock(AppUser.class)));
+        when(applicationRepository.findById(id)).thenReturn(Optional.of(mock(Application.class)));
+        //Act
+        applicationService.removeApplication(id, user);
+        //Assert
+        verify(applicationRepository).delete(any(Application.class));
     }
 
 
