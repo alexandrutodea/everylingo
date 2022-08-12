@@ -100,7 +100,7 @@ public class TranslationRequestService {
 
         getUserIfEnabledAndActive(oAuth2User);
 
-        var byId = translationRequestRepository.findByRequestedById(translationId);
+        var byId = translationRequestRepository.findById(translationId);
 
         if (byId.isEmpty()) {
             throw new TranslationRequestNotFound();
