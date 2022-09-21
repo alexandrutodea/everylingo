@@ -7,11 +7,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor
 @Table(uniqueConstraints = {@UniqueConstraint(name = "auth_provider_id_unique", columnNames = "auth_provider_id")})
 public class AppUser {

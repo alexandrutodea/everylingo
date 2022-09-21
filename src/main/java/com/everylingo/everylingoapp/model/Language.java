@@ -8,14 +8,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-//@Entity
-
-@Setter
-@Getter
+@Data
 @Entity
-@ToString
-@EqualsAndHashCode
 @Table(uniqueConstraints = {@UniqueConstraint(name = "language_code_unique", columnNames = "code"), @UniqueConstraint(name = "language_name_unique", columnNames = "name")})
 @NoArgsConstructor
 public class Language {

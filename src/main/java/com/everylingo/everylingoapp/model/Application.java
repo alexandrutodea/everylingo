@@ -6,11 +6,8 @@ import javax.persistence.*;
 
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Application {
     @Id
     @SequenceGenerator(
